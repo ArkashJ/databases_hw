@@ -1,0 +1,8 @@
+*.DS_Store
+*.class
+*.mypy_cache
+*.pyc
+venv
+.idea
+*.iml
+*.jar
