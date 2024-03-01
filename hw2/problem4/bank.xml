@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<bank>
+  <account account_num="A0000001" owners="C0000001 C0000002">
+    <branch>Cambridge, MA</branch>
+    <balance>20000</balance>
+  </account>
+  <account account_num="A0000002" owners="C0000003">
+    <branch>Burlington, MA</branch>
+    <balance>7000</balance>
+  </account>
+  <account account_num="A0000003" owners="C0000003 C0000004">
+    <branch>Burlington, MA</branch>
+    <balance>300</balance>
+  </account>
+  <account account_num="A0000004" owners="C0000004">
+    <branch>Burlington, MA</branch>
+    <balance>1000</balance>
+  </account>
+  <account account_num="A0000005" owners="C0000002">
+    <branch>Cambridge, MA</branch>
+    <balance>1500</balance>
+  </account>
+  <customer customer_num="C0000001" owns="A0000001">
+    <name>John Smith</name>
+    <address>148 Pearl St., Watertown, MA</address>
+  </customer>
+  <customer customer_num="C0000002" owns="A0000001 A0000005">
+    <name>Alice Wong</name>
+    <address>148 Pearl St., Watertown, MA</address>
+  </customer>
+  <customer customer_num="C0000003" owns="A0000002 A0000003">
+    <name>Jose Delgado</name>
+    <address>Zero Longhorn Ave., Belmont, MA</address>
+  </customer>
+  <customer customer_num="C0000004" owns="A0000003 A0000004">
+    <name>Tammy Terrier</name>
+    <address>665 Commonwealth Ave., Boston, MA</address>
+  </customer>
+</bank>

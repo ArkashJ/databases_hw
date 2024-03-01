@@ -121,9 +121,9 @@ public class XMLforPeople {
             StringBuilder answer = new StringBuilder();
             while (results.next()) {
                 answer.append("      <movie>\n");
-                String year = simpleElem("name", String.valueOf(results.getInt(1)));
-                String name = simpleElem("year", results.getString(2));
-                answer.append("        ").append(name).append("\n").append("        ").append(year).append("\n");
+                String year = simpleElem("year", String.valueOf(results.getInt(1)));
+                String name = simpleElem("name", results.getString(2));
+                answer.append("        ").append(year).append("\n").append("        ").append(name).append("\n");
                 answer.append("      </movie>\n");
             }
             // replace this return statement with your implementation
@@ -229,7 +229,7 @@ public class XMLforPeople {
             if (!Objects.equals(directedInfo, "")){
                 ans.append(directedInfo);
             }
-            ans.append("  <person id=\"").append(personID).append("\">");
+            ans.append("  </person>\n");
             return ans.toString();
         } catch (SQLException err){
             System.out.println("Caught SQL Exception:"+ err.getMessage());

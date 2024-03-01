@@ -20,7 +20,8 @@ sample = """
 #    Follow the same format as the model query shown above.
 #
 query1 = """
-//person[name[starts-with(., 'Sam ')]] 
+for $p in //person[name[starts-with(., 'Sam ')]] 
+return $p/name
 """
 
 #
@@ -29,14 +30,14 @@ query1 = """
 
 
 query2 = """
-for $oscar in doc("imdb.xml")//oscars/oscar
-let $person_oscars := doc("imdb.xml")//person[name="Jodie Foster"]/@oscars,
- $movie := doc("imdb.xml")//movie[@id=$oscar/@movie_id]
+for $oscar in //oscars/oscar
+let $person_oscars := //person[name="Jodie Foster"]/@oscars,
+ $movie := //movie[@id=$oscar/@movie_id]
 where contains($person_oscars, $oscar/@id) and $oscar/type="BEST-ACTRESS"
 return <foster_oscar>
-  <name>{$movie/name}</name>
-  <type>{$oscar/type}</type>
-  <year>{$movie/year}</year>
+  {$movie/name}
+  {$oscar/type}
+  {$oscar/year}
 </foster_oscar>
 """
 
@@ -44,8 +45,8 @@ return <foster_oscar>
 # 3. Put your query for this problem between the triple quotes found below.
 #
 query3 = """
-for $year in distinct-values(doc("imdb.xml")//movie/year)
-let $movies := doc("imdb.xml")//movie[year = $year]
+for $year in distinct-values(//movie/year)
+let $movies := //movie[year = $year]
 where $year>=2010
 order by $year
 return
@@ -61,13 +62,13 @@ return
 # 4. Put your query for this problem between the triple quotes found below.
 #
 query4 = """
-for $d in doc("imdb.xml")//person[@directed]
+for $d in //person[@directed]
 let $directorId := $d/@id,
-    $movies := doc("imdb.xml")//movie[contains(@directors, $directorId) and earnings_rank < 200]
+    $movies := //movie[contains(@directors, $directorId) and earnings_rank < 200]
 where count($movies) >= 4
 return <top_director>
-      <name>{$d/name}</name>
-      <num_top_grossers>{count($movies)}</num_top_grossers>
+      {$d/name}
+      {count($movies)}
     {
       for $m in $movies
       let $movie_rank := string($m/earnings_rank), $movie_name := string($m/name)
@@ -80,12 +81,12 @@ return <top_director>
 # 5. Put your query for this problem between the triple quotes found below.
 #
 query5 = """
-for $m in doc("imdb.xml")//movie[contains(genre, "B")]
+for $m in //movie[contains(genre, "B")]
 return <biopic>
   <name>{string($m/name)}</name>
   <year>{string($m/year)}</year>
   {
-    for $o in doc("imdb.xml")//oscar
+    for $o in //oscar
     where $o/@movie_id = $m/@id
     return <award>{string($o/type)}</award>
   }
