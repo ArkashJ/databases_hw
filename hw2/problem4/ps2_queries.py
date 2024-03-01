@@ -66,15 +66,17 @@ for $d in //person[@directed]
 let $directorId := $d/@id,
     $movies := //movie[contains(@directors, $directorId) and earnings_rank < 200]
 where count($movies) >= 4
+order by $d/name
 return <top_director>
       {$d/name}
-      {count($movies)}
+      <num_top_grossers>{count($movies)}</num_top_grossers>
     {
       for $m in $movies
-      let $movie_rank := string($m/earnings_rank), $movie_name := string($m/name)
-      return <movie>{$movie_name || '-' || $movie_rank}</movie>
+      let $movie_rank := string($m/earnings_rank), 
+          $movie_name := string($m/name)
+      return <movie>{$movie_name || ' - ' || $movie_rank}</movie>
     }
-</top_director>
+    </top_director>
 """
 
 #
@@ -82,6 +84,7 @@ return <top_director>
 #
 query5 = """
 for $m in //movie[contains(genre, "B")]
+order by $m/name
 return <biopic>
   <name>{string($m/name)}</name>
   <year>{string($m/year)}</year>
