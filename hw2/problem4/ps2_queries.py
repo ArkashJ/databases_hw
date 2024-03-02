@@ -20,8 +20,7 @@ sample = """
 #    Follow the same format as the model query shown above.
 #
 query1 = """
-for $p in //person[name[starts-with(., 'Sam ')]] 
-return $p/name
+//person[name[starts-with(., 'Sam ')]]/name
 """
 
 #
@@ -74,7 +73,7 @@ return <top_director>
       for $m in $movies
       let $movie_rank := string($m/earnings_rank), 
           $movie_name := string($m/name)
-      return <movie>{$movie_name || ' - ' || $movie_rank}</movie>
+      return <movie>{string($m/name), "-", string($m/earnings_rank)}</movie>
     }
     </top_director>
 """
