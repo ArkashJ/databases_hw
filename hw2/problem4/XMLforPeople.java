@@ -148,7 +148,7 @@ public class XMLforPeople {
     public String actedIn(String personID) throws SQLException {
         try{
             String query = "SELECT Distinct M.year, M.name\n" +
-                    "FROM Movie as M, Person as P, Actor as A\n" +
+                    "FROM Movie as M, Actor as A\n" +
                     "WHERE A.actor_id = '" + personID + "' AND M.id = A.movie_id\n" +
                     "ORDER BY M.year, M.name;";
             ResultSet res = resultsFor(query);
