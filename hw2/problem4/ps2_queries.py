@@ -20,7 +20,7 @@ sample = """
 #    Follow the same format as the model query shown above.
 #
 query1 = """
-//person[name[starts-with(., 'Sam ')]]/name
+//person[contains(name,'Sam ')]/name
 """
 
 #
