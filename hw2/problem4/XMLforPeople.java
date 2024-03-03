@@ -121,7 +121,7 @@ public class XMLforPeople {
             StringBuilder answer = new StringBuilder();
             while (results.next()) {
                 answer.append("      <movie>\n");
-                String year = simpleElem("year", String.valueOf(results.getInt(1)));
+                String year = simpleElem("year", results.getString(1));
                 String name = simpleElem("name", results.getString(2));
                 answer.append("        ").append(year).append("\n").append("        ").append(name).append("\n");
                 answer.append("      </movie>\n");
@@ -147,7 +147,7 @@ public class XMLforPeople {
      */
     public String actedIn(String personID) throws SQLException {
         try{
-            String query = "SELECT Distinct M.year, M.name\n" +
+            String query = "SELECT M.year, M.name\n" +
                     "FROM Movie as M, Person as P, Actor as A\n" +
                     "WHERE A.actor_id = '" + personID + "' AND M.id = A.movie_id\n" +
                     "ORDER BY M.year, M.name;";
