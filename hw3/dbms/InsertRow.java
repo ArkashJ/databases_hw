@@ -64,6 +64,44 @@ public class InsertRow {
          * to do some of the work (e.g., to fill in the offsets array
          * with the appropriate offsets).
          */
+        // Write the primary key 
+        //
+        //
+        // Write the rest of the columns
+        //
+        // Write the offsets
+        //
+        // Write the key and value buffers
+        //
+        // Note: The offsets array should be filled in by the time
+        //
+        //      you write the key and value buffers.
+        //      you write the offsets.
+        //      you write the primary key.
+        //      you write the rest of the columns.
+        //      you write the offsets.
+        //      you write the key and value buffers.
+        //      you write the offsets.
+        //      you write the primary key.
+        //      you write the rest of the columns.
+        //      you write the offsets.
+        //      you write the key and value buffers.
+        //      you write the offsets.
+        //          
+        //          
+        //
+        
+        int offset = 0;
+        for (int i = 0; i < columnVals.length; i++) {
+            if (columnVals[i] == null) {
+                offsets[i] = IS_NULL;
+            } else if (table.getSchema().get(i).isPrimaryKey()) {
+                offsets[i] = IS_PKEY;
+            } else {
+                offsets[i] = offset;
+                offset += table.getSchema().get(i).getLength(columnVals[i]);
+            }
+        }
     }
         
     /**
