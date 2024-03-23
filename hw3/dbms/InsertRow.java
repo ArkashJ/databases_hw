@@ -122,11 +122,10 @@ public class InsertRow {
             // 3. Fill in the offsets in the value buffer
 
             RowOutput keyBuffer = this.getKeyBuffer();
-            RowOutput valueBuffer = this.getValueBuffer();
-            // we know the index and the value of the primary column
             this.writeToBuffer(primKeyCol, keyBuffer, columnVals[primKeyCol]);
             
-            // write the offsets to the value buffer
+            RowOutput valueBuffer = this.getValueBuffer();
+            // we know the index and the value of the primary column write the offsets to the value buffer
             for (int i = 0; i < offsets.length; i++){
                 valueBuffer.writeShort(offsets[i]);
             }
@@ -141,7 +140,6 @@ public class InsertRow {
                     writeToBuffer(i, valueBuffer, columnVals[i]);
                 }
             }
-
         } catch (Exception e) {
             System.out.println("Error in marshalling the data " + e);
         } finally {
@@ -158,7 +156,7 @@ public class InsertRow {
         try {
             Column col = this.table.getColumn(idx);
             int typeOfCol = col.getType();
-
+            // WARN: Depending on column type cast and write to buffer
            if (typeOfCol==0){
                 int valueInt = (Integer)columnVals[idx]; 
                 bufferToWrite.writeInt(valueInt); 
@@ -184,11 +182,14 @@ public class InsertRow {
         try {
             Column col = this.table.getColumn(i);
             int typeOfCol = col.getType();
+            // TEST:
             System.out.println("Column type is  "+ typeOfCol + " value is " + col);
             if (typeOfCol != 3){
+                // WARN: using inbuilt function if not a varchar
                 System.out.println("Length of the column is " + col.getLength());
                 return col.getLength();
             } else {
+                // WARN: if varchar, then return the length of the string after casting 
                 System.out.println("Length of the column is " + ((String)columnVals[i]).length());
                 return ((String)columnVals[i]).length();
             } 
