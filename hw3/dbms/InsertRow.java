@@ -118,7 +118,12 @@ public class InsertRow {
                     offsets[iter] = -1;
                 }
                 else {
-
+                    // we have a normal column, check the last non-negative offset and add it to the current one
+                    int lastOffset = i-1;
+                    while (lastOffset >= 0 && offsets[lastOffset] < 0){
+                        lastOffset--;
+                    }
+                    offsets[iter] = offsets[lastOffset-1] + getLengthForColumn(i);
                 }
             }
             
