@@ -81,22 +81,12 @@ public class InsertRow {
            // get the primary key to decide the index 
             Column primaryCol = this.table.primaryKeyColumn() == null ? this.table.getColumn(0) : this.table.primaryKeyColumn();
             // TEST: Primary Key Check
-            // System.out.println(primaryCol.getValue() + " "+ primaryCol.getIndex() + " " + primaryCol.getType());
+            System.out.println(" "+ primaryCol.getIndex() + " " + primaryCol.getType());
 
-            // TEST: Getting column info
-            //System.out.print(this.table.getColumn(2).getType());
-
-
-            // set the primary column index to be -2
             int primKeyCol = primaryCol.getIndex();
             int spaceByOffset = offsets.length*2;
             
             offsets[primKeyCol] = -2;
-            if (primKeyCol != 0){
-                    offsets[0] = spaceByOffset; 
-                } else  {
-                    offsets[1] = spaceByOffset;
-            } 
             // cases:
             // 1. Primary key is first column and no nulls - iterate through as normal 
             // 2. Primary key is first column and one of the columns is null
@@ -109,35 +99,29 @@ public class InsertRow {
                 offsets[1] = spaceByOffset;
                 iter = 2;
             }
-
-            int currOffset = 0; 
-            for (int i = iter; i <= offsets.length; i++){
-               if (i == primKeyCol){
-                   continue;
-               }
-                // if the column is null, offset[i-1] = -1
-                // if the offset is not -1 or -2, then calculate the offset 
-                // by adding the length of the previous column
-
+            
+            // if the column is null, offset[i-1] = -1
+            // if the offset is not -1 or -2, then calculate the offset 
+            // by adding the length of the previous column
+            
+            // INSERT INTO Movie VALUES ('2294629', 'Frozen', 102);
+            // Ignore '2294629' because it is the primary key column
+            // The offset arrat looks like [-2, 8, 14, 18], 8 is 
+            // offset of the offsets, 14 is the offset of frozen, 18 is the offset of 102
+            for (int i = 0; i < columnVals.length; i++){
+               // ignore the primary key column
+                if (i == primKeyCol){
+                    continue;
+                }
+                // if the column is null, set the offset to -1
                 if (columnVals[i] == null){
-                    offsets[i] = -1;
-                } else {
-                    if (offsets[i-1] == -1){
-                        // find the last non-null column and add the length of that column
-                        int j = i-1;
-                        while (offsets[j] == -1){
-                            j--;
-                        }
-                        currOffset = getLengthForColumn(i);
-                        offsets[i] = offsets[j] + currOffset;
-                    } else {
-                        currOffset = getLengthForColumn(i);
-                        offsets[i] = offsets[i-1] + currOffset;
-                    } 
+                    offsets[iter] = -1;
+                }
+                else {
+
                 }
             }
-            //offsets[offsets.length-1] = offsets[i-1] + currOffset;
-
+            
         } catch (Exception e) {
             System.out.println("Error in marshalling the data");
         } finally {
