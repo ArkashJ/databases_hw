@@ -85,7 +85,7 @@ public class InsertRow {
             // 2. Primary key is first column and one of the columns is null
             // 3. Primary key is not first column, may have null later on
             int iter; 
-            offsets[primKeyCol] = -2;
+            offsets[primKeyCol] = IS_PKEY;
             if (primKeyCol != 0){
                 offsets[0] = spaceByOffset;
                 iter = 1;
@@ -130,6 +130,7 @@ public class InsertRow {
             for (int i = 0; i < offsets.length; i++){
                 valueBuffer.writeShort(offsets[i]);
             }
+            // write the actual column values to the value buffer
             for (int i = 0; i < columnVals.length; i++){
                 if (i == primKeyCol){
                     continue;
@@ -148,7 +149,11 @@ public class InsertRow {
         }
     }
 
-
+    /**
+     * @Description: Take the index, buffer and value to add to buffer. 
+     * Determine the type of the column and then cast the object to write to the buffer 
+     *
+     * */
     private void writeToBuffer(int idx, RowOutput bufferToWrite, Object value) throws IOException{
         try {
             Column col = this.table.getColumn(idx);
