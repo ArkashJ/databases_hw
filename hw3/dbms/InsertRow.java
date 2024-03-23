@@ -119,16 +119,21 @@ public class InsertRow {
                 }
                 else {
                     // we have a normal column, check the last non-negative offset and add it to the current one
-                    int lastOffset = i-1;
+                    System.out.println("last offset is " + offsets[iter-1] + " iter value is " + iter + " i value is " + i);
+
+                    int lastOffset = iter-1;
                     while (lastOffset >= 0 && offsets[lastOffset] < 0){
                         lastOffset--;
                     }
-                    offsets[iter] = offsets[lastOffset-1] + getLengthForColumn(i);
+                     
+                    offsets[iter] = offsets[lastOffset] + getLengthForColumn(i);
+                    System.out.println("offsets[" + iter + "] is " + offsets[iter]);
+                    iter += 1;
                 }
             }
             
         } catch (Exception e) {
-            System.out.println("Error in marshalling the data");
+            System.out.println("Error in marshalling the data " + e);
         } finally {
             System.out.println("In the marshall function for InsertRow");
         }
@@ -138,11 +143,12 @@ public class InsertRow {
         try {
             Column col = this.table.getColumn(i);
             int typeOfCol = col.getType();
-            System.out.println("Column type is - "+ typeOfCol);
+            System.out.println("Column type is  "+ typeOfCol);
             if (typeOfCol != 3){
+                System.out.println("Length of the column is " + col.getLength());
                 return col.getLength();
             } else {
-                System.out.println((String)columnVals[i]);
+                System.out.println("Length of the column is " + ((String)columnVals[i]).length());
                 return ((String)columnVals[i]).length();
             } 
         } catch (Exception e) {
