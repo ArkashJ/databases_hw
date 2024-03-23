@@ -81,8 +81,9 @@ public class InsertRow {
            // get the primary key to decide the index 
             Column primaryCol = this.table.primaryKeyColumn() == null ? this.table.getColumn(0) : this.table.primaryKeyColumn();
             // TEST: Primary Key Check
-            // System.out.println(primaryCol.getValue() + " "+ primaryCol.getIndex() + " " + primaryCol.getType());
+            System.out.println(primaryCol.getValue() + " "+ primaryCol.getIndex() + " " + primaryCol.getType());
             
+
             // set the primary column index to be -2
             int primKeyCol = primaryCol.getIndex();
             int spaceByOffset = offsets.length*2;
@@ -108,25 +109,6 @@ public class InsertRow {
                 System.out.println(getLengthForColumn(i));
             }
 
-            // case 1: Primary key is first column
-            // if (primKeyCol==0){
-            //     offsets[0] = -2;
-            //     for (int i = 1; i < offsets.length; i++){
-            //         int typeOfCol = this.table.getColumn(i).getType();
-            //         int valOfCol = this.table.getColumn(i).getValue();
-            //         if (!valOfCol){
-            //             // displace primary key column?
-            //             offsets[i-1] = -1;
-            //         } else{
-            //             if ((typeofcol == 0 || typeofcol == 1 || typeofcol == 2)  && (offsets[i-1]!=-1 || offsets[i-1]==-1)){
-            //                 offsets[i] = offsets[i-1]+columnVals[i].getLength();
-            //             } else if ((typeofcol == 3)  && (offsets[i-1]!=-1 || offsets[i-1]!=-2)){
-            //                 String varchar_ = (String)columnVals[i].getValue(); 
-            //                 offsets[i] = offsets[i-1]+ varchar_.length;
-            //                 }
-            //         }
-            //     }
-            // }
         } catch (Exception e) {
             System.out.println("Error in marshalling the data");
         } finally {
@@ -136,19 +118,21 @@ public class InsertRow {
     
     private int getLengthForColumn(int i) throws IOException{
         
-        try {Column col = this.table.getColumn(i);
+        try {
+        Column col = this.table.getColumn(i);
         int typeOfCol = col.getType();
-        System.out.println("Column type is - "+ typeOfCol + " value is " + col);
+        System.out.println("Column type is - "+ typeOfCol);
         if (typeOfCol != 3){
             return col.getLength();
         } else {
-            System.out.println(((String)col.getValue()));
-        } 
+            System.out.println(col.adjustValue(col.getValue()));
+            } 
         } catch (Exception e) {
             System.out.println("Error in getting the length of the column");
         } finally {
             System.out.println("In the getLengthForColumn function");
         }
+        return 0;
     }
     
     /**
