@@ -64,8 +64,62 @@ public class InsertRow {
          * to do some of the work (e.g., to fill in the offsets array
          * with the appropriate offsets).
          */
+
+        /* NOTES
+         * TODO:: 1. Check the columns if they are empty or not.   
+         * 2. If not empty, based on the number of columns assign offsets (doesnt matter if empty or not)
+         * 3. Find the primary key and store it in the primary key buffer
+         * 4. Based on the offsets store the data in the value buffer
+         * WARN: Store offsets in an array BEFORE calculating marshalled arrays
+         *
+         * 1. Additionally, we can get any column from the table.
+         * 2. For VarChars, you will getLength(), use strings for data calculation
+         * 3. Remember to use type casts for columns and conversions for ints and reals
+         * */
+        try{
+           // get the primary key to decide the index 
+            Column primaryCol = this.table.primaryKeyColumn() == null ? this.table.getColumn(0) : this.table.primaryKeyColumn();
+            System.out.println(primaryCol.getValue() + " "+ primaryCol.getIndex() + " " + primaryCol.getType());
+            // set the primary column index to be -2
+            int primKeyCol = primaryCol.getIndex();
+            int spaceByOffset = offsets.length*2;
+            
+
+            // case 1: Primary key is first column
+            if (primKeyCol==0){
+                offsets[0] = -2;
+                for (int i = 1; i < offsets.length; i++){
+                    int typeOfCol = columnVals[i].getType();
+                    int valOfCol = columnVals[i].getValue();
+                    if (!valOfCol){
+                        // displace primary key column?
+                        offsets[i-1] = -1;
+                    } else{
+                        if ((typeofcol == 0 || typeofcol == 1 || typeofcol == 2)  && (offsets[i-1]!=-1 || offsets[i-1]==-1)){
+                            offsets[i] = offsets[i-1]+columnVals[i].getLength();
+                        } else if ((typeofcol == 3)  && (offsets[i-1]!=-1 || offsets[i-1]!=-2)){
+                            String varchar_ = (String)columnVals[i].getValue(); 
+                            offsets[i] = offsets[i-1]+ varchar_.length;
+                            }
+                    }
+                }
+            }
+
+         
+            // cases:
+            // 1. Primary key is first column and no nulls - iterate through as normal 
+            // 2. Primary key is first column and one of the columns is null
+            // 3. Primary key is not first column, may have null later on
+
+
+        } catch (Exception e) {
+            System.out.println("Error in marshalling the data");
+        } finally {
+            System.out.println("In the marshall function for InsertRow");
+        }
     }
-        
+    
+    
     /**
      * Returns the RowOutput used for the key portion of the marshalled row.
      *

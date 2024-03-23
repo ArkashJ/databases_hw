@@ -54,7 +54,6 @@ public class InsertStatement extends SQLStatement {
             
             // Create an InsertRow object for the row to be inserted,
             // and use that object to marshall the row.
-            adjustedValues[0] = null;
             InsertRow row = new InsertRow(table, adjustedValues);
             row.marshall();
             if (DBMS.DEBUG) {
