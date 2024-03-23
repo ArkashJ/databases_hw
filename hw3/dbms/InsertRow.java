@@ -81,7 +81,7 @@ public class InsertRow {
            // get the primary key to decide the index 
             Column primaryCol = this.table.primaryKeyColumn() == null ? this.table.getColumn(0) : this.table.primaryKeyColumn();
             // TEST: Primary Key Check
-            System.out.println(primaryCol.getValue() + " "+ primaryCol.getIndex() + " " + primaryCol.getType());
+            // System.out.println(primaryCol.getValue() + " "+ primaryCol.getIndex() + " " + primaryCol.getType());
 
             // TEST: Getting column info
             //System.out.print(this.table.getColumn(2).getType());
@@ -90,7 +90,6 @@ public class InsertRow {
             // set the primary column index to be -2
             int primKeyCol = primaryCol.getIndex();
             int spaceByOffset = offsets.length*2;
-            
             
             offsets[primKeyCol] = -2;
             if (primKeyCol != 0){
@@ -102,19 +101,42 @@ public class InsertRow {
             // 1. Primary key is first column and no nulls - iterate through as normal 
             // 2. Primary key is first column and one of the columns is null
             // 3. Primary key is not first column, may have null later on
-            
-            int currOffset = 0; 
-            for (int i = 0; i < table.numColumns(); i++){
-                // move on if primary key column 
-                if (i == primKeyCol){
-                    continue;
-                }
-                int colLen = getLengthForColumn(i); 
-                offsets[i] = (columnVals[i] == null) ? -1 : currOffset;
-                currOffset += colLen;
-                System.out.println(offsets[i]);
+            int iter;
+            if (primKeyCol != 0){
+                offsets[0] = spaceByOffset;
+                iter = 1;
+            } else{
+                offsets[1] = spaceByOffset;
+                iter = 2;
             }
-            offsets[offsets.length-1] = currOffset;
+
+            int currOffset = 0; 
+            for (int i = iter; i <= offsets.length; i++){
+               if (i == primKeyCol){
+                   continue;
+               }
+                // if the column is null, offset[i-1] = -1
+                // if the offset is not -1 or -2, then calculate the offset 
+                // by adding the length of the previous column
+
+                if (columnVals[i] == null){
+                    offsets[i] = -1;
+                } else {
+                    if (offsets[i-1] == -1){
+                        // find the last non-null column and add the length of that column
+                        int j = i-1;
+                        while (offsets[j] == -1){
+                            j--;
+                        }
+                        currOffset = getLengthForColumn(i);
+                        offsets[i] = offsets[j] + currOffset;
+                    } else {
+                        currOffset = getLengthForColumn(i);
+                        offsets[i] = offsets[i-1] + currOffset;
+                    } 
+                }
+            }
+            //offsets[offsets.length-1] = offsets[i-1] + currOffset;
 
         } catch (Exception e) {
             System.out.println("Error in marshalling the data");
