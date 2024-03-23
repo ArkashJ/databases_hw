@@ -82,32 +82,39 @@ public class InsertRow {
             Column primaryCol = this.table.primaryKeyColumn() == null ? this.table.getColumn(0) : this.table.primaryKeyColumn();
             // TEST: Primary Key Check
             System.out.println(primaryCol.getValue() + " "+ primaryCol.getIndex() + " " + primaryCol.getType());
-            
+
+            // TEST: Getting column info
+            //System.out.print(this.table.getColumn(2).getType());
+
 
             // set the primary column index to be -2
             int primKeyCol = primaryCol.getIndex();
             int spaceByOffset = offsets.length*2;
             
-            // TEST: Getting column info
-            //System.out.print(this.table.getColumn(2).getType());
             
+            offsets[primKeyCol] = -2;
+            if (primKeyCol != 0){
+                    offsets[0] = spaceByOffset; 
+                } else  {
+                    offsets[1] = spaceByOffset;
+            } 
             // cases:
             // 1. Primary key is first column and no nulls - iterate through as normal 
             // 2. Primary key is first column and one of the columns is null
             // 3. Primary key is not first column, may have null later on
             
-           
-            for (int i = 0; i < offsets.length; i++){
-                if (primKeyCol == i){
-                    offsets[i] = -2;
+            int currOffset = 0; 
+            for (int i = 0; i < table.numColumns(); i++){
+                // move on if primary key column 
+                if (i == primKeyCol){
+                    continue;
                 }
-                if (primKeyCol != 0){
-                    offsets[0] = spaceByOffset; 
-                } else{
-                    offsets[1] = spaceByOffset;
-                }
-                System.out.println(getLengthForColumn(i));
+                int colLen = getLengthForColumn(i); 
+                offsets[i] = (columnVals[i] == null) ? -1 : currOffset;
+                currOffset += colLen;
+                System.out.println(offsets[i]);
             }
+            offsets[offsets.length-1] = currOffset;
 
         } catch (Exception e) {
             System.out.println("Error in marshalling the data");
@@ -116,21 +123,19 @@ public class InsertRow {
         }
     }
     
-    private int getLengthForColumn(int i) throws IOException{
-        
+    private int getLengthForColumn(int i) throws IOException{ 
         try {
-        Column col = this.table.getColumn(i);
-        int typeOfCol = col.getType();
-        System.out.println("Column type is - "+ typeOfCol);
-        if (typeOfCol != 3){
-            return col.getLength();
-        } else {
-            System.out.println(col.adjustValue(col.getValue()));
+            Column col = this.table.getColumn(i);
+            int typeOfCol = col.getType();
+            System.out.println("Column type is - "+ typeOfCol);
+            if (typeOfCol != 3){
+                return col.getLength();
+            } else {
+                System.out.println((String)columnVals[i]);
+                return ((String)columnVals[i]).length();
             } 
         } catch (Exception e) {
             System.out.println("Error in getting the length of the column");
-        } finally {
-            System.out.println("In the getLengthForColumn function");
         }
         return 0;
     }
