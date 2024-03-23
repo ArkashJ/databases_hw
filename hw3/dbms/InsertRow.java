@@ -123,13 +123,35 @@ public class InsertRow {
 
             RowOutput keyBuffer = this.getKeyBuffer();
             RowOutput valueBuffer = this.getValueBuffer();
-
+            // we know the index and the value of the primary column
+            this.writeToBuffer(primKeyCol, keyBuffer, columnVals[primKeyCol]);
 
 
         } catch (Exception e) {
             System.out.println("Error in marshalling the data " + e);
         } finally {
             System.out.println("In the marshall function for InsertRow");
+        }
+    }
+
+
+    private void writeToBuffer(int idx, RowOutput bufferToWrite, Object value) throws IOException{
+        try {
+            Column col = this.table.getColumn(idx);
+            int typeOfCol = col.getType();
+
+           if (typeOfCol==0){
+                int valueInt = (Integer)columnVals[idx]; 
+                bufferToWrite.writeInt(valueInt); 
+            } else if (typeOfCol == 1){
+                Double valueDouble = (Double)columnVals[idx];
+                bufferToWrite.writeDouble(valueDouble.doubleValue());
+            } else if (typeOfCol == 2 || typeOfCol == 3){
+                String valueStr = (String)columnVals[idx];
+                bufferToWrite.writeBytes(valueStr);
+            }
+        } catch(Exception e){
+            System.out.println("Could not write to buffer "+e);
         }
     }
     
@@ -143,7 +165,7 @@ public class InsertRow {
         try {
             Column col = this.table.getColumn(i);
             int typeOfCol = col.getType();
-            System.out.println("Column type is  "+ typeOfCol);
+            System.out.println("Column type is  "+ typeOfCol + " value is " + col);
             if (typeOfCol != 3){
                 System.out.println("Length of the column is " + col.getLength());
                 return col.getLength();
