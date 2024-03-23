@@ -125,7 +125,21 @@ public class InsertRow {
             RowOutput valueBuffer = this.getValueBuffer();
             // we know the index and the value of the primary column
             this.writeToBuffer(primKeyCol, keyBuffer, columnVals[primKeyCol]);
-
+            
+            // write the offsets to the value buffer
+            for (int i = 0; i < offsets.length; i++){
+                valueBuffer.writeShort(offsets[i]);
+            }
+            for (int i = 0; i < columnVals.length; i++){
+                if (i == primKeyCol){
+                    continue;
+                }
+                if (columnVals[i] == null){
+                    valueBuffer.writeShort(IS_NULL);
+                } else {
+                    writeToBuffer(i, valueBuffer, columnVals[i]);
+                }
+            }
 
         } catch (Exception e) {
             System.out.println("Error in marshalling the data " + e);
