@@ -71,27 +71,21 @@ public class InsertRow {
          * 3. Find the primary key and store it in the primary key buffer
          * 4. Based on the offsets store the data in the value buffer
          * WARN: Store offsets in an array BEFORE calculating marshalled arrays
-         *
-         * 1. Additionally, we can get any column from the table.
-         * 2. For VarChars, you will getLength(), use strings for data calculation
-         * 3. Remember to use type casts for columns and conversions for ints and reals
          * */
-        
+
         try{
            // get the primary key to decide the index 
             Column primaryCol = this.table.primaryKeyColumn() == null ? this.table.getColumn(0) : this.table.primaryKeyColumn();
             // TEST: Primary Key Check
-            System.out.println(" "+ primaryCol.getIndex() + " " + primaryCol.getType());
-
+            //System.out.println(" "+ primaryCol.getIndex() + " " + primaryCol.getType());
             int primKeyCol = primaryCol.getIndex();
             int spaceByOffset = offsets.length*2;
-            
-            offsets[primKeyCol] = -2;
             // cases:
             // 1. Primary key is first column and no nulls - iterate through as normal 
             // 2. Primary key is first column and one of the columns is null
             // 3. Primary key is not first column, may have null later on
-            int iter;
+            int iter; 
+            offsets[primKeyCol] = -2;
             if (primKeyCol != 0){
                 offsets[0] = spaceByOffset;
                 iter = 1;
@@ -99,15 +93,7 @@ public class InsertRow {
                 offsets[1] = spaceByOffset;
                 iter = 2;
             }
-            
-            // if the column is null, offset[i-1] = -1
-            // if the offset is not -1 or -2, then calculate the offset 
-            // by adding the length of the previous column
-            
-            // INSERT INTO Movie VALUES ('2294629', 'Frozen', 102);
-            // Ignore '2294629' because it is the primary key column
-            // The offset arrat looks like [-2, 8, 14, 18], 8 is 
-            // offset of the offsets, 14 is the offset of frozen, 18 is the offset of 102
+            // if the column is null, offset[i-1] = -1 else if the offset is not -1 or -2, then calculate the offset 
             for (int i = 0; i < columnVals.length; i++){
                // ignore the primary key column
                 if (i == primKeyCol){
@@ -125,13 +111,21 @@ public class InsertRow {
                     while (lastOffset >= 0 && offsets[lastOffset] < 0){
                         lastOffset--;
                     }
-                    
                     offsets[iter] = offsets[lastOffset] + getLengthForColumn(i);
-                    System.out.println("offsets[" + iter + "] is " + offsets[iter]);
                     iter += 1;
                 }
             }
-            
+        
+            // OFFSET Array has been generate, now time to fill in the buffers
+            // 1. Fill in the key buffer
+            // 2. Fill in the value buffer
+            // 3. Fill in the offsets in the value buffer
+
+            RowOutput keyBuffer = this.getKeyBuffer();
+            RowOutput valueBuffer = this.getValueBuffer();
+
+
+
         } catch (Exception e) {
             System.out.println("Error in marshalling the data " + e);
         } finally {
