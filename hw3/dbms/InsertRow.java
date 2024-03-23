@@ -116,16 +116,16 @@ public class InsertRow {
                 // if the column is null, set the offset to -1
                 if (columnVals[i] == null){
                     offsets[iter] = -1;
+                    iter += 1;
                 }
                 else {
                     // we have a normal column, check the last non-negative offset and add it to the current one
                     System.out.println("last offset is " + offsets[iter-1] + " iter value is " + iter + " i value is " + i);
-
                     int lastOffset = iter-1;
                     while (lastOffset >= 0 && offsets[lastOffset] < 0){
                         lastOffset--;
                     }
-                     
+                    
                     offsets[iter] = offsets[lastOffset] + getLengthForColumn(i);
                     System.out.println("offsets[" + iter + "] is " + offsets[iter]);
                     iter += 1;
@@ -139,6 +139,12 @@ public class InsertRow {
         }
     }
     
+    /**
+     * @Description:
+     * Function take in the index of the column and 
+     * depending on the type of the column, return the length of the column
+     *
+     */
     private int getLengthForColumn(int i) throws IOException{ 
         try {
             Column col = this.table.getColumn(i);
@@ -152,8 +158,9 @@ public class InsertRow {
                 return ((String)columnVals[i]).length();
             } 
         } catch (Exception e) {
-            System.out.println("Error in getting the length of the column");
+            System.out.println("Error in getting the length of the column" + e);
         }
+        // dummy return, should not reach here
         return 0;
     }
     
