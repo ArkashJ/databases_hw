@@ -105,7 +105,6 @@ public class InsertRow {
                 }
             }
 
-         
             // cases:
             // 1. Primary key is first column and no nulls - iterate through as normal 
             // 2. Primary key is first column and one of the columns is null
