@@ -223,7 +223,7 @@ public class TableIterator {
         // if n = 1, offset = 2, if n = 4, offset = 2*4
         // Once calculated, read the offset value. Also check the column type
         // if it is VARCHAR, iterate until a non-null offset is found and subtract it to get the necessary length
-        short offset = 2*colIndex;
+        int offset = 2*colIndex;
         if (col.isPrimaryKey()) {
             return this.readValue(keyIn, col, offset);
         }
@@ -244,7 +244,7 @@ public class TableIterator {
                 case Column.CHAR:
                     return in.readBytesAtOffset(offset, col.getLength());
                 case Column.VARCHAR:
-                    // if the column is a primary key, then we read from keyoffset
+                    
                     if (col.isPrimaryKey()) {
                         return in.readBytesAtOffset(offset, this.key.getSize());
                     }
