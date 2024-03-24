@@ -228,8 +228,7 @@ public class TableIterator {
         if (col.isPrimaryKey()) {
             return this.readValue(keyIn, col, offset);
         }
-
-        System.out.println(valueIn.toString() + " \n " + " \nColumn index is" + colIndex + "\n offset is " + offset + "Column type is " + col.getType());
+        // TEST: System.out.println(value.toString());
         return this.readValue(valueIn, col, offset);
     }
     
@@ -246,6 +245,7 @@ public class TableIterator {
                 case Column.CHAR:
                     return in.readShortAtOffset(offset);
                 case Column.VARCHAR:
+                    //WARN: System.out.println("Reading varchar at offset " + offset + " with length " + in.readShortAtOffset(offset));
                     short len = in.readShortAtOffset(offset);
                     // for zero length varchar return empty string
                     if (len == 0) {
@@ -254,17 +254,18 @@ public class TableIterator {
                     if (len == -1) {
                         return null;
                     }
-                    // checkOffset throws an error if offset is invalid
-                    // check if the value array is ended or not
-                    if (in.readNextShort() == -1) {
-                        return in.readBytesAtOffset(offset, len);
+                    // firstly find the next non null offset
+                    // once we know the next non null offset, we can calculate the length of the varchar 
+                    // then we can read the varchar from the offset
+                   
+                    int nextOffset = in.readShortAtOffset(offset + 2);
+                    //WARN: System.out.println("Next offset is " + nextOffset);
+                    if (nextOffset == -1) {
+                        return null;
                     }
-                    int nextOffset = offset + 2; 
-                    while (in.readNextShort() == -1 || in.readNextShort() == -2){
-                        nextOffset += 2; 
-                    }
-                    int varCharSize = nextOffset - offset - 2;
-                    return in.readBytesAtOffset(offset, varCharSize);
+                    int length = nextOffset - offset;
+                    //WARN: System.out.println("Length is " + length);
+                    return in.readBytesAtOffset(offset, length); 
                 default:
                     throw new IllegalStateException("unknown column type");
         }    
