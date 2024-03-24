@@ -254,9 +254,7 @@ public class TableIterator {
                     if (len == -1) {
                         return null;
                     }
-                    // firstly find the next non null offset
-                    // once we know the next non null offset, we can calculate the length of the varchar 
-                    // then we can read the varchar from the offset
+                    // find the next non null offset then we can calculate the length of the varchar, then we can read the varchar from the offset
                     int forwardOffset = offset+2; 
                     while (forwardOffset == -1) {
                         forwardOffset+= 2;
