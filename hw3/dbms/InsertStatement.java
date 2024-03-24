@@ -63,7 +63,24 @@ public class InsertStatement extends SQLStatement {
             /* 
              * PS 3: Add code below to perform the actual insertion, 
              * and to print the appropriate message after it has occurred.
+             *
+             * uses the byte arrays from the RowOutput objects in the InsertRow object to construct the necessary Berkeley DB objects for the key/value pair
+             * adds the key/value pair to the underlying BDB database.
              */
+            RowOutput keyBuffer = row.getKeyBuffer();
+            RowOutput valueBuffer = row.getValueBuffer(); 
+            
+            byte[] bytes = keyBuffer.getBufferBytes();
+            int numBytes = keyBuffer.getBufferLength();
+            System.out.println("Bytes are "+ bytes + " numBytes are "+numBytes + "\n" + keyBuffer.toString());     
+            DatabaseEntry key = new DatabaseEntry(bytes, 0, numBytes);
+
+            bytes = valueBuffer.getBufferBytes();
+            numBytes = valueBuffer.getBufferLength();
+         
+            System.out.println("Bytes are "+ bytes + " numBytes are "+numBytes + "\n" + keyBuffer.toString());
+
+            DatabaseEntry value = new DatabaseEntry(bytes, 0, numBytes);
             
             
         } catch (Exception e) {
