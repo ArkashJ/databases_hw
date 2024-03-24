@@ -256,7 +256,7 @@ public class TableIterator {
                     throw new IllegalStateException("unknown column type");
             }
         } catch (IOException e) {
-            throw new IllegalStateException("error reading value");
+            throw new IOException("error reading value "+e);
         }
     }
 
