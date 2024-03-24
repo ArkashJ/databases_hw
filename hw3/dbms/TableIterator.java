@@ -231,8 +231,7 @@ public class TableIterator {
         return this.readValue(valueIn, col, offset);
     }
     
-    private Object readValue(RowInput in, Column col, int offset) throws IOException{
-        try {
+    private Object readValue(RowInput in, Column col, int offset) {
             // if offset is -1 then return null
             if (offset == -1) {
                 return null;
@@ -254,10 +253,7 @@ public class TableIterator {
                     return in.readBytesAtOffset(offset, varCharSize);
                 default:
                     throw new IllegalStateException("unknown column type");
-            }
-        } catch (IOException e) {
-            throw new IOException("error reading value "+e);
-        }
+        }    
     }
 
     /**
