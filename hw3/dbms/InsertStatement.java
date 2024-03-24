@@ -81,8 +81,33 @@ public class InsertStatement extends SQLStatement {
             System.out.println("Bytes are "+ bytes + " numBytes are "+numBytes + "\n" + keyBuffer.toString());
 
             DatabaseEntry value = new DatabaseEntry(bytes, 0, numBytes);
+            // https://docs.oracle.com/cd/E17276_01/html/java/com/sleepycat/db/Database.html#get-com.sleepycat.db.Transaction-com.sleepycat.db.DatabaseEntry-com.sleepycat.db.DatabaseEntry-com.sleepycat.db.LockMode-            
+            // check if the key/value pair exists or not
+            /**
+             *
+             * public OperationStatus get(Transaction txn,
+                           DatabaseEntry key,
+                           DatabaseEntry data,
+                           LockMode lockMode)
+                    throws DatabaseException
+             *
+             * */
             
-            
+            Database db = table.getDB();
+            // OperationStatus status = db.get(null, key, value, LockMode.DEFAULT);
+            // // can allow DEFAULT, DIRTY_READ, RMW. I'm leaving the default
+            // if (status == OperationStatus.SUCCESS){
+            //     throw new Exception("For db "+ db.getDatabaseName() + " key "+ key + " with key value pairs already exists");
+            // }else{
+            //     System.out.println("status is " + status);
+            // }
+            OperationStatus resultOfPut = db.putNoOverwrite(null, key, value);
+            if (resultOfPut == OperationStatus.KEYEXIST){
+                throw new Exception("For db "+ db.getDatabaseName() + " key "+ key + " with key value pairs already exists"); 
+            }
+            System.out.println("Successfully inserted key value pair");
+        
+
         } catch (Exception e) {
             if (DBMS.DEBUG) {
                 e.printStackTrace();
