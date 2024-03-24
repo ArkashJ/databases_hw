@@ -76,6 +76,7 @@ public class InsertRow {
         try{
            // get the primary key to decide the index 
             Column primaryCol = this.table.primaryKeyColumn() == null ? this.table.getColumn(0) : this.table.primaryKeyColumn();
+            
             // TEST: Primary Key Check
             //System.out.println(" "+ primaryCol.getIndex() + " " + primaryCol.getType());
             int primKeyCol = primaryCol.getIndex();
@@ -161,13 +162,13 @@ public class InsertRow {
             int typeOfCol = col.getType();
             // WARN: Depending on column type cast and write to buffer
            if (typeOfCol==0){
-                int valueInt = (Integer)columnVals[idx]; 
-                bufferToWrite.writeInt(valueInt); 
+                Integer valueInt = (Integer)columnVals[idx]; 
+                bufferToWrite.writeInt(valueInt.intValue()); 
             } else if (typeOfCol == 1){
                 Double valueDouble = (Double)columnVals[idx];
                 bufferToWrite.writeDouble(valueDouble.doubleValue());
             } else if (typeOfCol == 2 || typeOfCol == 3){
-                String valueStr = (String)columnVals[idx];
+                String valueStr = columnVals[idx].toString();
                 bufferToWrite.writeBytes(valueStr);
             }
         } catch(Exception e){
