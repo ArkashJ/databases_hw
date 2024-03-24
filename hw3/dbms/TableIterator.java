@@ -228,6 +228,8 @@ public class TableIterator {
         if (col.isPrimaryKey()) {
             return this.readValue(keyIn, col, offset);
         }
+
+        System.out.println(valueIn.toString() + " \n " + " \nColumn index is" + colIndex + "\n offset is " + offset + "Column type is " + col.getType());
         return this.readValue(valueIn, col, offset);
     }
     
@@ -245,6 +247,18 @@ public class TableIterator {
                     return in.readShortAtOffset(offset);
                 case Column.VARCHAR:
                     short len = in.readShortAtOffset(offset);
+                    // for zero length varchar return empty string
+                    if (len == 0) {
+                        return "";
+                    }
+                    if (len == -1) {
+                        return null;
+                    }
+                    // checkOffset throws an error if offset is invalid
+                    // check if the value array is ended or not
+                    if (in.readNextShort() == -1) {
+                        return in.readBytesAtOffset(offset, len);
+                    }
                     int nextOffset = offset + 2; 
                     while (in.readNextShort() == -1 || in.readNextShort() == -2){
                         nextOffset += 2; 
