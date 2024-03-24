@@ -106,7 +106,9 @@ public class InsertRow {
                 }
                 else {
                     // we have a normal column, check the last non-negative offset and add it to the current one
-                    System.out.println("last offset is " + offsets[iter-1] + " iter value is " + iter + " i value is " + i);
+                    if (DBMS.DEBUG){
+                        System.out.println("last offset is " + offsets[iter-1] + " iter value is " + iter + " i value is " + i);
+                    }
                     int lastOffset = iter-1;
                     while (lastOffset >= 0 && offsets[lastOffset] < 0){
                         lastOffset--;
@@ -140,6 +142,7 @@ public class InsertRow {
                     writeToBuffer(i, valueBuffer, columnVals[i]);
                 }
             }
+            System.out.println("Successfully marshalled the data");
         } catch (Exception e) {
             System.out.println("Error in marshalling the data " + e);
         } finally {
