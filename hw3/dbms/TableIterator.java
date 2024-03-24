@@ -228,7 +228,7 @@ public class TableIterator {
         if (col.isPrimaryKey()) {
             return this.readValue(keyIn, col, offset);
         }
-        // TEST: System.out.println(value.toString());
+        // TEST:System.out.println(value.toString());
         return this.readValue(valueIn, col, offset);
     }
     
@@ -257,14 +257,18 @@ public class TableIterator {
                     // firstly find the next non null offset
                     // once we know the next non null offset, we can calculate the length of the varchar 
                     // then we can read the varchar from the offset
-                   
-                    int nextOffset = in.readShortAtOffset(offset + 2);
+                    int forwardOffset = offset+2; 
+                    while (forwardOffset == -1) {
+                        forwardOffset+= 2;
+                    }
+                    
+                    int nextOffset = in.readShortAtOffset(forwardOffset);
                     //WARN: System.out.println("Next offset is " + nextOffset);
                     if (nextOffset == -1) {
                         return null;
                     }
                     int length = nextOffset - offset;
-                    //WARN: System.out.println("Length is " + length);
+                    //WARN:System.out.println("Length is " + length);
                     return in.readBytesAtOffset(offset, length); 
                 default:
                     throw new IllegalStateException("unknown column type");
