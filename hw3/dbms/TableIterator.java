@@ -233,7 +233,7 @@ public class TableIterator {
     
     private Object readValue(RowInput in, Column col, int offset) throws IOException{
         try {
-        // if offset is -1 then return null
+            // if offset is -1 then return null
             if (offset == -1) {
                 return null;
             }
