@@ -247,7 +247,7 @@ public class TableIterator {
                 case Column.VARCHAR:
                     short len = in.readShortAtOffset(offset);
                     int nextOffset = offset + 2; 
-                    while (in.readNextShort() == -1){
+                    while (in.readNextShort() == -1 || in.readNextShort() == -2){
                         nextOffset += 2; 
                     }
                     int varCharSize = nextOffset - offset - 2;
