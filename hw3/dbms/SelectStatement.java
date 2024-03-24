@@ -69,6 +69,24 @@ public class SelectStatement extends SQLStatement {
              * PS 3: Add code here to implement the rest of the method
              * as described in the assignment.
              */
+            Table table = this.getTable(0);
+            if (table.open() != OperationStatus.SUCCESS){
+                throw new Exception("DB not opened");
+            }
+            
+            // Initial error checks
+            if (this.numTables() > 1){
+                throw new Exception("More than 1 table in from clause is not supported");
+            } 
+            // check if we need all columns
+            if (!this.selectList.get(0).equals(STAR)){
+                throw new RuntimeException("Only * operation is supported! You cannot chose specific columns");
+            }
+
+            iter = new TableIterator(this, table, true);
+            iter.printAll(System.out);
+            System.out.println("We have selected " + iter.numTuples() + " from the table " + table);
+
         } catch (Exception e) {
             if (DBMS.DEBUG) {
                 e.printStackTrace();
