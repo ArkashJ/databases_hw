@@ -217,6 +217,11 @@ public class TableIterator {
          * PS 3: replace the following return statement with your 
          * implementation of the rest of this method.
          */
+
+        RowInput keyIn = new RowInput(this.key.getData());
+        RowInput valueIn = new RowInput(this.value.getData()); 
+
+
         return null;
     }
     
