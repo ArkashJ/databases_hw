@@ -95,7 +95,6 @@ public class InsertStatement extends SQLStatement {
                     throws DatabaseException
              *
              * */
-            
             Database db = table.getDB();
             // OperationStatus status = db.get(null, key, value, LockMode.DEFAULT);
             // if (status == OperationStatus.SUCCESS){
@@ -105,8 +104,6 @@ public class InsertStatement extends SQLStatement {
                 throw new Exception("For db "+ db.getDatabaseName() + " key "+ key + " with key value pairs already exists"); 
             }
             System.out.println("\n Successfully inserted key value pair");
-        
-
         } catch (Exception e) {
             if (DBMS.DEBUG) {
                 e.printStackTrace();
