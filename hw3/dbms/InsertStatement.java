@@ -95,17 +95,13 @@ public class InsertStatement extends SQLStatement {
             
             Database db = table.getDB();
             // OperationStatus status = db.get(null, key, value, LockMode.DEFAULT);
-            // // can allow DEFAULT, DIRTY_READ, RMW. I'm leaving the default
             // if (status == OperationStatus.SUCCESS){
             //     throw new Exception("For db "+ db.getDatabaseName() + " key "+ key + " with key value pairs already exists");
-            // }else{
-            //     System.out.println("status is " + status);
-            // }
             OperationStatus resultOfPut = db.putNoOverwrite(null, key, value);
             if (resultOfPut == OperationStatus.KEYEXIST){
                 throw new Exception("For db "+ db.getDatabaseName() + " key "+ key + " with key value pairs already exists"); 
             }
-            System.out.println("Successfully inserted key value pair");
+            System.out.println("\n Successfully inserted key value pair");
         
 
         } catch (Exception e) {
