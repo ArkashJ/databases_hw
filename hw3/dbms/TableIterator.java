@@ -220,11 +220,39 @@ public class TableIterator {
 
         RowInput keyIn = new RowInput(this.key.getData());
         RowInput valueIn = new RowInput(this.value.getData()); 
-
-
-        return null;
+        // calculate offset to go to using n
+        // if n = 1, offset = 2, if n = 4, offset = 2*4
+        // Once calculated, read the offset value. Also check the column type
+        // if it is VARCHAR, iterate until a non-null offset is found and subtract it to get the necessary length
+        
+        int offset = 2*colIndex;
+        if (col.isPrimaryKey()) {
+            return this.readValue(keyIn, col, offset);
+        }
+        return this.readValue(valueIn, col, offset);
     }
     
+    private Object readValue(RowInput in, Column col, int offset) {
+        switch (col.getType()) {
+            case Column.INTEGER:
+                return in.readIntAtOffset(offset);
+            case Column.REAL:
+                return in.readDoubleAtOffset(offset);
+            case Column.CHAR:
+                return in.readShortAtOffset(offset);
+            case Column.VARCHAR:
+                short len = in.readShortAtOffset(offset);
+                int nextOffset = offset + 2; 
+                while (in.readNextShort() == -1){
+                    nextOffset += 2; 
+                }
+                int varCharSize = nextOffset - offset - 2;
+                return in.readBytesAtOffset(offset, varCharSize);
+            default:
+                throw new IllegalStateException("unknown column type");
+        } 
+    }
+
     /**
      * Gets the number of tuples that the iterator has visited.
      *
