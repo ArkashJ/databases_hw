@@ -216,13 +216,14 @@ public class TableIterator {
         /* 
          * PS 3: replace the following return statement with your 
          * implementation of the rest of this method.
+         * calculate offset to go to using n if n = 1, offset = 2, if n = 4, offset = 2*4
+         * Once calculated, read the offset value. Also check the column type
+        if it is VARCHAR, iterate until a non-null offset is found and subtract it to get the necessary length
+
          */
+
         RowInput keyIn = new RowInput(this.key.getData());
         RowInput valueIn = new RowInput(this.value.getData()); 
-        // calculate offset to go to using n
-        // if n = 1, offset = 2, if n = 4, offset = 2*4
-        // Once calculated, read the offset value. Also check the column type
-        // if it is VARCHAR, iterate until a non-null offset is found and subtract it to get the necessary length
         int offset = 2*colIndex;
         if (col.isPrimaryKey()) {
             return this.readValue(keyIn, col, offset);
@@ -244,7 +245,7 @@ public class TableIterator {
                 case Column.CHAR:
                     return in.readBytesAtOffset(offset, col.getLength());
                 case Column.VARCHAR:
-                    
+                    // check for primary key 
                     if (col.isPrimaryKey()) {
                         return in.readBytesAtOffset(offset, this.key.getSize());
                     }
