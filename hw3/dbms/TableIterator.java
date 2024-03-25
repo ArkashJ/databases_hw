@@ -222,18 +222,47 @@ public class TableIterator {
 
          */
 
-        RowInput keyIn = new RowInput(this.key.getData());
-        RowInput valueIn = new RowInput(this.value.getData()); 
-        int offset = 2*colIndex;
-        if (col.isPrimaryKey()) {
-            if (col.getType() != Column.VARCHAR){ 
-                return this.readValue(keyIn, col, offset);
-            } else{
-                return keyIn.readBytesAtOffset(offset, this.key.getSize());
+        if(col.isPrimaryKey()){
+            RowInput keyIn = new RowInput(this.key.getData());
+            if(col.getType()==Column.VARCHAR){
+                return keyIn.readBytesAtOffset(0, this.key.getSize());
+            }
+            
+            switch (col.getType()) {
+                case Column.INTEGER:
+                    return keyIn.readIntAtOffset(0);
+                case Column.REAL:
+                    return keyIn.readDoubleAtOffset(0);
+                case Column.CHAR:
+                    return keyIn.readBytesAtOffset(0, col.getLength());
+            }
+        }
+        else{
+            RowInput valueIn = new RowInput(this.value.getData());
+            short input = valueIn.readShortAtOffset(colIndex*2);   
+            if(input == -1){
+                return null;
+            }
+            if(col.getType()==Column.VARCHAR){
+                short end = valueIn.readNextShort();
+                while(end == -1 || end == -2){
+                    end = valueIn.readNextShort();
+
+                }
+                return valueIn.readBytesAtOffset(input, end-input);
+            }
+            
+            switch (col.getType()) {
+                case Column.INTEGER:
+                    return valueIn.readIntAtOffset(input);
+                case Column.REAL:
+                    return valueIn.readDoubleAtOffset(input);
+                case Column.CHAR:
+                    return valueIn.readBytesAtOffset(input, col.getLength());
             }
         }
         // TEST:System.out.println(value.toString());
-        return this.readValue(valueIn, col, offset);
+        return null;
     }
     
     private Object readValue(RowInput in, Column col, int offset) {   
@@ -243,20 +272,20 @@ public class TableIterator {
         }
         switch (col.getType()) {
             case Column.INTEGER:
-                return in.readIntAtOffset(offset);
+                return in.readIntAtOffset(len);
             case Column.REAL:
-                return in.readDoubleAtOffset(offset);
+                return in.readDoubleAtOffset(len);
             case Column.CHAR:
-                return in.readBytesAtOffset(offset, col.getLength());
+                return in.readBytesAtOffset(len, col.getLength());
             case Column.VARCHAR:
                 //WARN: System.out.println("Reading varchar at offset " + offset + " with length " + in.readShortAtOffset(offset));
                 // for zero length varchar return empty string
                 // if (len == 0) {
                 //     return "";
                 // }
-                // if (len == -1) {
-                //     return null;
-                // }
+                if (len == -1) {
+                    return null;
+                }
                 short end = in.readNextShort();
                 while (end == -1 || end == -2){
                     end = in.readNextShort();
