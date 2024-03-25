@@ -85,7 +85,7 @@ public class SelectStatement extends SQLStatement {
 
             iter = new TableIterator(this, table, true);
             iter.printAll(System.out);
-            System.out.println("We have selected " + iter.numTuples() + " from the table " + table);
+            System.out.println("Selected " + iter.numTuples() + " tuples");
 
         } catch (Exception e) {
             if (DBMS.DEBUG) {
