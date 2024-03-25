@@ -103,7 +103,7 @@ public class InsertStatement extends SQLStatement {
             if (resultOfPut == OperationStatus.KEYEXIST){
                 throw new Exception("For db "+ db.getDatabaseName() + " key "+ key + " with key value pairs already exists"); 
             }
-            System.out.println("Added 1 row to "+table.getName() );
+            System.out.println("Added 1 row to "+table.getName()+"." );
         } catch (Exception e) {
             if (DBMS.DEBUG) {
                 e.printStackTrace();
