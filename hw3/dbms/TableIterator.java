@@ -226,8 +226,7 @@ public class TableIterator {
             RowInput keyIn = new RowInput(this.key.getData());
             if(col.getType()==Column.VARCHAR){
                 return keyIn.readBytesAtOffset(0, this.key.getSize());
-            }
-            
+            } 
             switch (col.getType()) {
                 case Column.INTEGER:
                     return keyIn.readIntAtOffset(0);
@@ -251,7 +250,6 @@ public class TableIterator {
                 }
                 return valueIn.readBytesAtOffset(input, end-input);
             }
-            
             switch (col.getType()) {
                 case Column.INTEGER:
                     return valueIn.readIntAtOffset(input);
@@ -265,36 +263,37 @@ public class TableIterator {
         return null;
     }
     
-    private Object readValue(RowInput in, Column col, int offset) {   
-        short len = in.readShortAtOffset(offset);
-        if (len == -1){
-            return null;
-        }
-        switch (col.getType()) {
-            case Column.INTEGER:
-                return in.readIntAtOffset(len);
-            case Column.REAL:
-                return in.readDoubleAtOffset(len);
-            case Column.CHAR:
-                return in.readBytesAtOffset(len, col.getLength());
-            case Column.VARCHAR:
-                //WARN: System.out.println("Reading varchar at offset " + offset + " with length " + in.readShortAtOffset(offset));
-                // for zero length varchar return empty string
-                // if (len == 0) {
-                //     return "";
-                // }
-                if (len == -1) {
-                    return null;
-                }
-                short end = in.readNextShort();
-                while (end == -1 || end == -2){
-                    end = in.readNextShort();
-                } 
-                return in.readBytesAtOffset(len, end-len);
-            default:
-                throw new IllegalStateException("unknown column type");
-    }    
-    }
+    // Switching out logic 
+    // private Object readValue(RowInput in, Column col, int offset) {   
+    //     short len = in.readShortAtOffset(offset);
+    //     if (len == -1){
+    //         return null;
+    //     }
+    //     switch (col.getType()) {
+    //         case Column.INTEGER:
+    //             return in.readIntAtOffset(len);
+    //         case Column.REAL:
+    //             return in.readDoubleAtOffset(len);
+    //         case Column.CHAR:
+    //             return in.readBytesAtOffset(len, col.getLength());
+    //         case Column.VARCHAR:
+    //             //WARN: System.out.println("Reading varchar at offset " + offset + " with length " + in.readShortAtOffset(offset));
+    //             // for zero length varchar return empty string
+    //             // if (len == 0) {
+    //             //     return "";
+    //             // }
+    //             if (len == -1) {
+    //                 return null;
+    //             }
+    //             short end = in.readNextShort();
+    //             while (end == -1 || end == -2){
+    //                 end = in.readNextShort();
+    //             } 
+    //             return in.readBytesAtOffset(len, end-len);
+    //         default:
+    //             throw new IllegalStateException("unknown column type");
+    //     }    
+    // }
 
     /**
      * Gets the number of tuples that the iterator has visited.
