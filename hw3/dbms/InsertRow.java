@@ -85,37 +85,26 @@ public class InsertRow {
             // 1. Primary key is first column and no nulls - iterate through as normal 
             // 2. Primary key is first column and one of the columns is null
             // 3. Primary key is not first column, may have null later on
-            int iter; 
-            offsets[primKeyCol] = IS_PKEY;
-            if (primKeyCol != 0){
-                offsets[0] = spaceByOffset;
-                iter = 1;
-            } else{
-                offsets[1] = spaceByOffset;
-                iter = 2;
-            }
+
+            int currOffset; 
             // if the column is null, offset[i-1] = -1 else if the offset is not -1 or -2, then calculate the offset 
             for (int i = 0; i < columnVals.length; i++){
                // ignore the primary key column
                 if (i == primKeyCol){
+                    offset[i] = IS_PKEY;
                     continue;
                 }
                 // if the column is null, set the offset to -1
                 if (columnVals[i] == null){
-                    offsets[iter] = -1;
-                    iter += 1;
+                    offsets[i] = -1;
                 }
                 else {
                     // we have a normal column, check the last non-negative offset and add it to the current one
                     if (DBMS.DEBUG){
                         System.out.println("last offset is " + offsets[iter-1] + " iter value is " + iter + " i value is " + i);
                     }
-                    int lastOffset = iter-1;
-                    while (lastOffset >= 0 && offsets[lastOffset] < 0){
-                        lastOffset--;
-                    }
-                    offsets[iter] = offsets[lastOffset] + getLengthForColumn(i);
-                    iter += 1;
+                    offset[i] = currOffset;
+                    currOffset += getLengthForColumn(i);
                 }
             }
         
@@ -186,15 +175,14 @@ public class InsertRow {
         try {
             Column col = this.table.getColumn(i);
             int typeOfCol = col.getType();
-            // TEST:
-            System.out.println("Column type is  "+ typeOfCol + " value is " + col);
+            // TEST:System.out.println("Column type is  "+ typeOfCol + " value is " + col);
             if (typeOfCol != 3){
                 // WARN: using inbuilt function if not a varchar
-                System.out.println("Length of the column is " + col.getLength());
+                // System.out.println("Length of the column is " + col.getLength());
                 return col.getLength();
             } else {
                 // WARN: if varchar, then return the length of the string after casting 
-                System.out.println("Length of the column is " + ((String)columnVals[i]).length());
+                // System.out.println("Length of the column is " + ((String)columnVals[i]).length());
                 return ((String)columnVals[i]).length();
             } 
         } catch (Exception e) {
