@@ -253,9 +253,9 @@ public class TableIterator {
                     //WARN: System.out.println("Reading varchar at offset " + offset + " with length " + in.readShortAtOffset(offset));
                     short len = in.readShortAtOffset(offset);
                     // for zero length varchar return empty string
-                    if (len == 0) {
-                        return "";
-                    }
+                    // if (len == 0) {
+                    //     return "";
+                    // }
                     if (len == -1) {
                         return null;
                     }

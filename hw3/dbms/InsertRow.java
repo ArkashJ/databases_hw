@@ -132,12 +132,10 @@ public class InsertRow {
                     writeToBuffer(i, valueBuffer, columnVals[i]);
                 }
             }
-            System.out.println("Successfully marshalled the data");
+            // System.out.println("Successfully marshalled the data");
         } catch (Exception e) {
             System.out.println("Error in marshalling the data " + e);
-        } finally {
-            System.out.println("In the marshall function for InsertRow");
-        }
+        }   
     }
 
     /**
