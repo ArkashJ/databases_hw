@@ -226,61 +226,56 @@ public class TableIterator {
         RowInput valueIn = new RowInput(this.value.getData()); 
         int offset = 2*colIndex;
         if (col.isPrimaryKey()) {
-            return this.readValue(keyIn, col, offset);
+            if (col.getType() != Column.VARCHAR){ 
+                return this.readValue(keyIn, col, offset);
+            } else{
+                return in.readBytesAtOffset(offset, this.key.getSize());
+            }
         }
         // TEST:System.out.println(value.toString());
         return this.readValue(valueIn, col, offset);
     }
     
     private Object readValue(RowInput in, Column col, int offset) {
-            // if offset is -1 then return null
-            // if (offset == -1) {
-            //     return null;
-            // }
-            switch (col.getType()) {
-                case Column.INTEGER:
-                    return in.readIntAtOffset(offset);
-                case Column.REAL:
-                    return in.readDoubleAtOffset(offset);
-                case Column.CHAR:
-                    return in.readBytesAtOffset(offset, col.getLength());
-                case Column.VARCHAR:
-                    // check for primary key 
-                    if (col.isPrimaryKey()) {
-                        return in.readBytesAtOffset(offset, this.key.getSize());
-                    }
+        switch (col.getType()) {
+            case Column.INTEGER:
+                return in.readIntAtOffset(offset);
+            case Column.REAL:
+                return in.readDoubleAtOffset(offset);
+            case Column.CHAR:
+                return in.readBytesAtOffset(offset, col.getLength());
+            case Column.VARCHAR:
+                //WARN: System.out.println("Reading varchar at offset " + offset + " with length " + in.readShortAtOffset(offset));
+                short len = in.readShortAtOffset(offset);
+                // for zero length varchar return empty string
+                // if (len == 0) {
+                //     return "";
+                // }
+                if (len == -1) {
+                    return null;
+                }
+                short end = in.readNextShort();
+                while (end == -1 || end == -2){
+                    end = in.readNextShort();
+                } 
 
-                    //WARN: System.out.println("Reading varchar at offset " + offset + " with length " + in.readShortAtOffset(offset));
-                    short len = in.readShortAtOffset(offset);
-                    // for zero length varchar return empty string
-                    // if (len == 0) {
-                    //     return "";
-                    // }
-                    if (len == -1) {
-                        return null;
-                    }
-                    short end = in.readNextShort();
-                    while (end == -1 || end == -2){
-                        end = in.readNextShort();
-                    } 
-
-                    return in.readBytesAtOffset(len, end-len);
-                    // find the next non null offset then we can calculate the length of the varchar, then we can read the varchar from the offset
-                    // int forwardOffset = offset+2; 
-                    // while (forwardOffset == -1 || forwardOffset == -2) {
-                    //     forwardOffset+= 2;
-                    // }
-                    // int nextOffset = in.readShortAtOffset(forwardOffset);
-                    // //WARN: System.out.println("Next offset is " + nextOffset);
-                    // if (nextOffset == -1) {
-                    //     return null;
-                    // }
-                    // int length = nextOffset - offset;
-                    // //WARN:System.out.println("Length is " + length);
-                    // return in.readBytesAtOffset(offset, length); 
-                default:
-                    throw new IllegalStateException("unknown column type");
-        }    
+                return in.readBytesAtOffset(len, end-len);
+                // find the next non null offset then we can calculate the length of the varchar, then we can read the varchar from the offset
+                // int forwardOffset = offset+2; 
+                // while (forwardOffset == -1 || forwardOffset == -2) {
+                //     forwardOffset+= 2;
+                // }
+                // int nextOffset = in.readShortAtOffset(forwardOffset);
+                // //WARN: System.out.println("Next offset is " + nextOffset);
+                // if (nextOffset == -1) {
+                //     return null;
+                // }
+                // int length = nextOffset - offset;
+                // //WARN:System.out.println("Length is " + length);
+                // return in.readBytesAtOffset(offset, length); 
+            default:
+                throw new IllegalStateException("unknown column type");
+    }    
     }
 
     /**
