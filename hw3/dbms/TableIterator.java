@@ -264,7 +264,7 @@ public class TableIterator {
                         end = in.readNextShort();
                     } 
 
-                    return in.readBytesAtOffset(len, end-input);
+                    return in.readBytesAtOffset(len, end-len);
                     // find the next non null offset then we can calculate the length of the varchar, then we can read the varchar from the offset
                     // int forwardOffset = offset+2; 
                     // while (forwardOffset == -1 || forwardOffset == -2) {
