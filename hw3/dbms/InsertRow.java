@@ -86,27 +86,27 @@ public class InsertRow {
             // 2. Primary key is first column and one of the columns is null
             // 3. Primary key is not first column, may have null later on
 
-            int currOffset; 
+            int currOffset= 2*offsets.length; 
             // if the column is null, offset[i-1] = -1 else if the offset is not -1 or -2, then calculate the offset 
             for (int i = 0; i < columnVals.length; i++){
                // ignore the primary key column
                 if (i == primKeyCol){
-                    offset[i] = IS_PKEY;
-                    continue;
+                    offsets[i] = IS_PKEY;
                 }
                 // if the column is null, set the offset to -1
-                if (columnVals[i] == null){
+                else if (columnVals[i] == null){
                     offsets[i] = -1;
                 }
                 else {
                     // we have a normal column, check the last non-negative offset and add it to the current one
                     if (DBMS.DEBUG){
-                        System.out.println("last offset is " + offsets[iter-1] + " iter value is " + iter + " i value is " + i);
+                        System.out.println("last offset is " + offsets[i] +" i value is " + i);
                     }
-                    offset[i] = currOffset;
+                    offsets[i] = currOffset;
                     currOffset += getLengthForColumn(i);
                 }
             }
+            offsets[offsets.length-1] = currOffset;
         
             // OFFSET Array has been generate, now time to fill in the buffers
             // 1. Fill in the key buffer

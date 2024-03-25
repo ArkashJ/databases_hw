@@ -72,16 +72,16 @@ public class InsertStatement extends SQLStatement {
             
             byte[] bytes = keyBuffer.getBufferBytes();
             int numBytes = keyBuffer.getBufferLength();
-            if (DBMS.DEBUG){
-                System.out.println("Bytes are "+ bytes + " numBytes are "+numBytes + "\n" + keyBuffer.toString());     
-            }
+            // if (DBMS.DEBUG){
+            //     System.out.println("Bytes are "+ bytes + " numBytes are "+numBytes + "\n" + keyBuffer.toString());     
+            // }
             DatabaseEntry key = new DatabaseEntry(bytes, 0, numBytes);
 
             bytes = valueBuffer.getBufferBytes();
             numBytes = valueBuffer.getBufferLength();
-            if (DBMS.DEBUG) {
-                System.out.println("Bytes are "+ bytes + " numBytes are "+numBytes + "\n" +valueBuffer.toString());
-            }
+            // if (DBMS.DEBUG) {
+            //     System.out.println("Bytes are "+ bytes + " numBytes are "+numBytes + "\n" +valueBuffer.toString());
+            // }
 
             DatabaseEntry value = new DatabaseEntry(bytes, 0, numBytes);
             // https://docs.oracle.com/cd/E17276_01/html/java/com/sleepycat/db/Database.html#get-com.sleepycat.db.Transaction-com.sleepycat.db.DatabaseEntry-com.sleepycat.db.DatabaseEntry-com.sleepycat.db.LockMode-            
