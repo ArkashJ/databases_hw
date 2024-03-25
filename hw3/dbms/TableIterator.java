@@ -229,7 +229,7 @@ public class TableIterator {
             if (col.getType() != Column.VARCHAR){ 
                 return this.readValue(keyIn, col, offset);
             } else{
-                return in.readBytesAtOffset(offset, this.key.getSize());
+                return keyIn.readBytesAtOffset(offset, this.key.getSize());
             }
         }
         // TEST:System.out.println(value.toString());
