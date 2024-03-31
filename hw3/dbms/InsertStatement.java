@@ -109,9 +109,8 @@ public class InsertStatement extends SQLStatement {
                 e.printStackTrace();
             }
             String errMsg = e.getMessage();
-            System.out.println(e);
             if (errMsg != null) {
-                System.err.println(e + ": " + errMsg + ".");
+                System.err.println(errMsg + ".");            
             }
             System.err.println("Could not insert row.");
         }
