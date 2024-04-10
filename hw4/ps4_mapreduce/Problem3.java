@@ -32,6 +32,7 @@ public class Problem3 {
             String line = value.toString();
             
             String[] lines= line.split(",");
+            System.out.prinltn(Arrays.toString(lines));
             //System.out.println("Printing");
             for (String word: lines){
                 if (word.contains("@")){
@@ -42,8 +43,6 @@ public class Problem3 {
             }
         }
 
-        // TODO: add helper to find using binary search the email with @ and divide it. If no such word, return "".
-        // Get the word and write 1
     }
 
     public static class MyReducer
