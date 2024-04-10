@@ -54,7 +54,11 @@ public class Problem3 {
           throws IOException, InterruptedException 
         {
             /* Define your reduce method here. */
-
+            long count = 0;
+            for (IntWritable val: values){
+                count += val.get();
+            }
+            context.write(key, new LongWritable(count));
         }
     }
 
