@@ -74,7 +74,6 @@ public class Problem4 {
       extends Reducer<Text,Text, Text, Text> 
     {
       public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-      System.out.println("HERE ------------- " + values.toString());
       long max = 0;
       String keyForMax="";
       for (Text val: values){
