@@ -21,22 +21,56 @@ import org.apache.hadoop.mapreduce.lib.output.*;
 public class Problem4 {
     /*** mapper and reducer for the first job in the chain */
     public static class MyMapper1
-      extends Mapper<Object, Object, Object, Object> 
+      extends Mapper<Object, Text, Text, IntWritable> 
     {
+      public void map(Object key, Text value, Context context) 
+        throws IOException, InterruptedException{
+          
+            String line = value.toString(); 
+            String[] lines= line.split(",");
+            System.out.println(Arrays.toString(lines));
+            //System.out.println("Printing");
+            for (String word: lines){
+                if (word.contains("@")){
+                    String newWord = word.split("@")[1];
+                    //System.out.println(newWord.toString());
+                    context.write(new Text(newWord), new IntWritable(1));
+                } 
+            }
+      } 
 
+    
     }
 
     public static class MyReducer1
-      extends Reducer<Object, Object, Object, Object> 
+      extends Reducer<Text,IntWritable, Text, LongWritable> 
     {
-
+        public void reduce(Text key, Iterable<IntWritable> values,
+                                   Context context)
+            throws IOException, InterruptedException 
+          {
+              /* Define your reduce method here. */
+              long count = 0;
+              for (IntWritable val: values){
+                  count += val.get();
+              }
+              context.write(key, new LongWritable(count));
+          }
     }
 
     /*** mapper and reducer for the second job in the chain */
     public static class MyMapper2
-      extends Mapper<Object, Object, Object, Object> 
+      extends Mapper<Object,Text, Text, Text> 
     {
 
+      public void map(Object key, Text value, Context context) throws IOException, InterruptedException{
+        String outputConst = "email sum";
+        System.out.println("-----------------HERE--------------------");
+        String pair = value.toString();
+        System.out.println(pair.trim().replaceAll("\\s{2,}", " "));
+        String parts = pair.split(" ");
+        context.write(new Text(outputConst), new Text(pair)); 
+      }
     }
 
     public static class MyReducer2
@@ -59,13 +93,13 @@ public class Problem4 {
 
         // Sets the types for the keys and values output by the first reducer.
         /* CHANGE THE CLASS NAMES AS NEEDED IN THESE TWO METHOD CALLS */
-        job1.setOutputKeyClass(Object.class);
-        job1.setOutputValueClass(Object.class);
+        job1.setOutputKeyClass(Text.class);
+        job1.setOutputValueClass(LongWritable.class);
 
         // Sets the types for the keys and values output by the first mapper.
         /* CHANGE THE CLASS NAMES AS NEEDED IN THESE TWO METHOD CALLS */
-        job1.setMapOutputKeyClass(Object.class);
-        job1.setMapOutputValueClass(Object.class);
+        job1.setMapOutputKeyClass(Text.class);
+        job1.setMapOutputValueClass(IntWritable.class);
 
         // Configure the type and location of the data processed by job1.
         job1.setInputFormatClass(TextInputFormat.class);
@@ -94,8 +128,8 @@ public class Problem4 {
 
         // Sets the types for the keys and values output by the second mapper.
         /* CHANGE THE CLASS NAMES AS NEEDED IN THESE TWO METHOD CALLS */
-        job2.setMapOutputKeyClass(Object.class);
-        job2.setMapOutputValueClass(Object.class);
+        job2.setMapOutputKeyClass(Text.class);
+        job2.setMapOutputValueClass(Text.class);
 
         // Configure the type and location of the data processed by job2.
         // Note that its input path is the output path of job1!
