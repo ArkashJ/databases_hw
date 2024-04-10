@@ -87,9 +87,8 @@ public class Problem4 {
           keyForMax=parts[0];
         }
       }
-      System.out.println("*********************"+ max + " key " + keyForMax);
+      //System.out.println("*********************"+ max + " key " + keyForMax);
       context.write(new Text(keyForMax), new Text(Long.toString(max))); 
-      //   context.write(new Text(maxEmail), new Text(Long.toString(max)));
       }
     }
 
