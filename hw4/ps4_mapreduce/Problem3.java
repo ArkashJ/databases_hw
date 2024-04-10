@@ -6,7 +6,6 @@
 
 import java.io.IOException;
 import java.util.*;
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.*;
@@ -25,9 +24,25 @@ public class Problem3 {
         public void map(Object key, Text value, Context context)
           throws IOException, InterruptedException 
         {
-            /* Define your map method here. */
-
+            /*
+             * Map function - parse till @symbol.if no such symbol ignore 
+             * 
+             *
+             * */
+            String line = value.toString();
+            
+            String[] lines= line.split(",");
+            //System.out.println(Arrays.toString(lines));   
+            System.out.println("Printing");
+            for (String word: lines){
+                if (word.contains(@)){
+                    newWord = word.split("@")[1];
+                } 
+            }
         }
+
+        // TODO: add helper to find using binary search the email with @ and divide it. If no such word, return "".
+        // Get the word and write 1
     }
 
     public static class MyReducer
