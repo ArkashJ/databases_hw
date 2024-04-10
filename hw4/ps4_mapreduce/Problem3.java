@@ -32,11 +32,12 @@ public class Problem3 {
             String line = value.toString();
             
             String[] lines= line.split(",");
-            //System.out.println(Arrays.toString(lines));   
-            System.out.println("Printing");
+            //System.out.println("Printing");
             for (String word: lines){
-                if (word.contains(@)){
-                    newWord = word.split("@")[1];
+                if (word.contains("@")){
+                    String newWord = word.split("@")[1];
+                    //System.out.println(newWord.toString());
+                    context.write(new Text(newWord), new IntWritable(1));
                 } 
             }
         }
