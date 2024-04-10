@@ -64,11 +64,8 @@ public class Problem4 {
     {
 
       public void map(Object key, Text value, Context context) throws IOException, InterruptedException{
-        String outputConst = "email sum";
-        System.out.println("-----------------HERE--------------------");
+        String outputConst = "email_sum";
         String pair = value.toString();
-        System.out.println(pair.trim().replaceAll("\\s{2,}", " "));
-        String[] parts = pair.split(" ");
         context.write(new Text(outputConst), new Text(pair)); 
       }
     }
@@ -77,18 +74,22 @@ public class Problem4 {
       extends Reducer<Text,Text, Text, Text> 
     {
       public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-        long max = 0;
-        for (Text val: values){
-          String[] parts = val.toString().split(" ");
-          long count = Long.parseLong(parts[1]);
-          if (count > max){
-            max = count;
-            maxEmail = parts[0];
-          }
+      System.out.println("HERE ------------- " + values.toString());
+      long max = 0;
+      String keyForMax="";
+      for (Text val: values){
+        String[] parts = val.toString().split("\t"); 
+        // System.out.println(Arrays.toString(parts) + " length is " + parts.length); 
+        // System.out.println(parts[0].toString() + "      ---- " + parts[1].toString());
+        long freq= Long.parseLong(parts[1]);
+        if (freq >  max){
+          max = freq;
+          keyForMax=parts[0];
         }
-        // concatenate the email and the count
-        String result = maxEmail + " " + max;
-        context.write(key, new Text(result));
+      }
+      System.out.println("*********************"+ max + " key " + keyForMax);
+      context.write(new Text(keyForMax), new Text(Long.toString(max))); 
+      //   context.write(new Text(maxEmail), new Text(Long.toString(max)));
       }
     }
 
@@ -137,7 +138,7 @@ public class Problem4 {
         // Sets the types for the keys and values output by the second reducer.
         /* CHANGE THE CLASS NAMES AS NEEDED IN THESE TWO METHOD CALLS */
         job2.setOutputKeyClass(Text.class);
-        job2.setOutputValueClass(LongWritable.class);
+        job2.setOutputValueClass(Text.class);
 
         // Sets the types for the keys and values output by the second mapper.
         /* CHANGE THE CLASS NAMES AS NEEDED IN THESE TWO METHOD CALLS */
