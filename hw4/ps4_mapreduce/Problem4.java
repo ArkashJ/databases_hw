@@ -68,15 +68,28 @@ public class Problem4 {
         System.out.println("-----------------HERE--------------------");
         String pair = value.toString();
         System.out.println(pair.trim().replaceAll("\\s{2,}", " "));
-        String parts = pair.split(" ");
+        String[] parts = pair.split(" ");
         context.write(new Text(outputConst), new Text(pair)); 
       }
     }
 
     public static class MyReducer2
-      extends Reducer<Object, Object, Object, Object> 
+      extends Reducer<Text,Text, Text, Text> 
     {
-
+      public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+        long max = 0;
+        for (Text val: values){
+          String[] parts = val.toString().split(" ");
+          long count = Long.parseLong(parts[1]);
+          if (count > max){
+            max = count;
+            maxEmail = parts[0];
+          }
+        }
+        // concatenate the email and the count
+        String result = maxEmail + " " + max;
+        context.write(key, new Text(result));
+      }
     }
 
     public static void main(String[] args) throws Exception {
@@ -123,8 +136,8 @@ public class Problem4 {
 
         // Sets the types for the keys and values output by the second reducer.
         /* CHANGE THE CLASS NAMES AS NEEDED IN THESE TWO METHOD CALLS */
-        job2.setOutputKeyClass(Object.class);
-        job2.setOutputValueClass(Object.class);
+        job2.setOutputKeyClass(Text.class);
+        job2.setOutputValueClass(LongWritable.class);
 
         // Sets the types for the keys and values output by the second mapper.
         /* CHANGE THE CLASS NAMES AS NEEDED IN THESE TWO METHOD CALLS */
