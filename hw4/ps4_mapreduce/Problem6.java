@@ -20,15 +20,47 @@ import org.apache.hadoop.mapreduce.lib.output.*;
 
 public class Problem6 {
     public static class MyMapper
-      extends Mapper<Object, Object, Object, Object> 
+      extends Mapper<Object, Text, Text, LongWritable> 
     {
+      public void map(Object key, Text value, Context context) throws IOException, InterruptedException{
+        String line = value.toString();
+        String[] lines = line.split(";");
 
+        String[] userInfo = lines[0].split(",");
+        int group_idxes=0;
+        for (int i=0; i<userInfo.length;i++){
+          if (userInfo[i].contains("@")){
+            if (i==userInfo.length){
+              continue;
+            }
+            group_idxes = i+1;
+            break;
+          }
+        }
+        
+        String[] age = line.split("-");
+        String[] intermediate= age[age.length-3].split(",");
+        int year= Integer.parseInt(intermediate[intermediate.length-1]); 
+        for (int i=group_idxes; i<userInfo.length;i++){
+          context.write(new Text(userInfo[i]), new LongWritable(year));
+        }
+        
+      }
     }
 
     public static class MyReducer
-      extends Reducer<Object, Object, Object, Object> 
+      extends Reducer<Text, LongWritable, Text, LongWritable> 
     {
-
+        public void reduce(Text key, Iterable<LongWritable> values, Context context) throws IOException, InterruptedException{
+            long count = 0;
+            for (LongWritable val: values){
+              long year = val.get();
+              if (year <= 1963){
+                count += 1;
+              }
+            }
+            context.write(key, new LongWritable(count));
+        }
     }
 
     public static void main(String[] args) throws Exception {
@@ -42,13 +74,13 @@ public class Problem6 {
 
         // Sets the types for the keys and values output by the reducer.
         /* CHANGE THE CLASS NAMES AS NEEDED IN THESE TWO METHOD CALLS */
-        job.setOutputKeyClass(Object.class);
-        job.setOutputValueClass(Object.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(LongWritable.class);
 
         // Sets the types for the keys and values output by the mapper.
         /* CHANGE THE CLASS NAMES AS NEEDED IN THESE TWO METHOD CALLS */
-        job.setMapOutputKeyClass(Object.class);
-        job.setMapOutputValueClass(Object.class);
+        job.setMapOutputKeyClass(Text.class);
+        job.setMapOutputValueClass(LongWritable.class);
 
         // Configure the type and location of the data being processed.
         job.setInputFormatClass(TextInputFormat.class);
