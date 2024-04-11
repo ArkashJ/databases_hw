@@ -32,7 +32,7 @@ public class Problem3 {
             String line = value.toString();
             
             String[] lines= line.split(",");
-            System.out.prinltn(Arrays.toString(lines));
+            //System.out.println(Arrays.toString(lines));
             //System.out.println("Printing");
             for (String word: lines){
                 if (word.contains("@")){

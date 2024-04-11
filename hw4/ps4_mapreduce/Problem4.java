@@ -28,7 +28,7 @@ public class Problem4 {
           
             String line = value.toString(); 
             String[] lines= line.split(",");
-            System.out.println(Arrays.toString(lines));
+            //System.out.println(Arrays.toString(lines));
             //System.out.println("Printing");
             for (String word: lines){
                 if (word.contains("@")){
