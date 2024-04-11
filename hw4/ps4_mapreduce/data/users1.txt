@@ -1,0 +1,5 @@
+1,Berrios,Paul,1998-05-21,paul.b496@gmail.com,21,44,49,47,10;929,124,576,602,796
+2,Smith,Delvin,1971-01-06,dsmith7@hotmail.co.uk,21,12;925,25,137,741
+3,McNair,John,1983-11-28,j.mcnair@yahoo.com,12,2,22,48,38,10,43;296,794,546,649,483,632,836
+40,Carson,Hannah,1995-03-09,hannahcarson@sbcglobal.net,1,8,7,3,18,15,12,16;84,72,78,31
+41,Vasq,Jo,1978-04-10,john.vasq@gmail.com,12,8,10,6,15

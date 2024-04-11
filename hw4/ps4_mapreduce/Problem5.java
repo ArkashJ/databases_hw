@@ -20,9 +20,15 @@ import org.apache.hadoop.mapreduce.lib.output.*;
 
 public class Problem5 {
     public static class MyMapper
-      extends Mapper<Object, Object, Object, Object> 
+      extends Mapper<Object, Text, Text, IntWritable> 
     {
-
+        public void map(Object key, Text value, Context context) 
+      throws IOException, InterruptedException 
+        {
+            String line = value.toStrin();
+            String[] lines = line.split(";");
+            
+        }
     }
 
     public static class MyReducer
