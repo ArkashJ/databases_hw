@@ -24,27 +24,27 @@ public class Problem6 {
     {
       public void map(Object key, Text value, Context context) throws IOException, InterruptedException{
         String line = value.toString();
-        String[] lines = line.split(";");
+        String[] lines = line.split(",");
+        int birthyear = Integer.parseInt(lines[3].split("-")[0]); 
+        String userId = lines[0];
+        
+        int idx_to_start = 4;
+        if (idx_to_start < lines.length){
+          if (lines[idx_to_start].contains("@")){
+              idx_to_start+=1;
+          }
 
-        String[] userInfo = lines[0].split(",");
-        int group_idxes=0;
-        for (int i=0; i<userInfo.length;i++){
-          if (userInfo[i].contains("@")){
-            if (i==userInfo.length){
-              continue;
-            }
-            group_idxes = i+1;
-            break;
+          for (int i = idx_to_start; i <lines.length; i++){
+              if (lines[i].contains(";")){
+                  String[] idsToAdd =lines[i].split(";")[0].split(",");
+                  for (String id: idsToAdd){
+                      context.write(new Text(id), new LongWritable(birthyear));
+                  }
+                  break;
+              }
+              context.write(new Text(lines[i]), new LongWritable(birthyear));
           }
         }
-        
-        String[] age = line.split("-");
-        String[] intermediate= age[age.length-3].split(",");
-        int year= Integer.parseInt(intermediate[intermediate.length-1]); 
-        for (int i=group_idxes; i<userInfo.length;i++){
-          context.write(new Text(userInfo[i]), new LongWritable(year));
-        }
-        
       }
     }
 

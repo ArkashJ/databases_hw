@@ -5,12 +5,45 @@ import java.io.FileReader;
 import java.io.IOException;
 public class test {
     public static void main(String[] args) { 
-        String filePath="users1.txt"; 
+        String filePath="users100.txt"; 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             // Skip the first line (header line)
             br.readLine();
 
             String line;
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(",");
+                String birthyear = values[3].split("-")[0];
+                String userId = values[0]; 
+                System.out.println("values is" +Arrays.toString(values) + " --- " + birthyear+"--- id" + userId + "---values length is" + values.length);
+                ArrayList<String> ids = new ArrayList<String>();
+                
+                int idx_to_start = 4;
+                if (values[idx_to_start].contains("@")){
+                    idx_to_start+=1;
+                }
+                for (int i = idx_to_start; i <values.length; i++){
+                    System.out.println(values[i].toString());
+                    if (values[i].contains(";")){
+                        String[] idsToAdd = values[i].split(";")[0].split(",");
+                        for (String id: idsToAdd){
+                            System.out.println(id.toString());
+                        }
+                        break;
+                    }
+                }
+                // System.out.println(values[idx_to_start].toString());
+                // while (!values[idx_to_start].contains(";") ){
+                //     ids.add(values[idx_to_start]);
+                //     idx_to_start+=1;
+                //     if (idx_to_start == values.length){
+                //         break;
+                //     }
+                // }
+                
+                // System.out.println("user is " + values[1].toString() + "--" + ids ); 
+            }
+
             // TEST: Seperate by email
             // while ((line = br.readLine()) != null) {
             //     String[] values = line.split(",");
