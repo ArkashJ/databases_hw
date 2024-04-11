@@ -5,7 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 public class test {
     public static void main(String[] args) { 
-        String filePath="users1.txt"; 
+        String filePath="users20.txt"; 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             // Skip the first line (header line)
             br.readLine();
@@ -28,6 +28,8 @@ public class test {
                 } else{
                     /* System.out.println(Arrays.toString(values)); */
                     System.out.println(values[0].toString());
+                    String[] userInfo = values[0].split(",");
+                    System.out.println(userInfo[0].toString() + " num friends " + values[1].split(",").length + "---"+values[1].toString());
                 } 
             }
         } catch (IOException e) {
