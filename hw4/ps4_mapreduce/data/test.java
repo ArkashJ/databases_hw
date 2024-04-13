@@ -5,7 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 public class test {
     public static void main(String[] args) { 
-        String filePath="users100.txt"; 
+        String filePath="users1.txt"; 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             // Skip the first line (header line)
             br.readLine();
@@ -17,7 +17,6 @@ public class test {
                 String userId = values[0]; 
                 System.out.println("values is" +Arrays.toString(values) + " --- " + birthyear+"--- id" + userId + "---values length is" + values.length);
                 ArrayList<String> ids = new ArrayList<String>();
-                
                 int idx_to_start = 4;
                 if (values[idx_to_start].contains("@")){
                     idx_to_start+=1;
@@ -27,11 +26,14 @@ public class test {
                     if (values[i].contains(";")){
                         String[] idsToAdd = values[i].split(";")[0].split(",");
                         for (String id: idsToAdd){
+                            ids.add(id); 
                             System.out.println(id.toString());
                         }
                         break;
                     }
+                    ids.add(values[i]); 
                 }
+                System.out.println("user is " + userId + "--" + ids );
                 // System.out.println(values[idx_to_start].toString());
                 // while (!values[idx_to_start].contains(";") ){
                 //     ids.add(values[idx_to_start]);
