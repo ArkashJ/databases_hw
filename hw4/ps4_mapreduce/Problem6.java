@@ -19,30 +19,46 @@ import org.apache.hadoop.mapreduce.lib.input.*;
 import org.apache.hadoop.mapreduce.lib.output.*;
 
 public class Problem6 {
+    private static final int BIRTH_YEAR = 3;
+    private static final int GROUPS = 4;
     public static class MyMapper
       extends Mapper<Object, Text, Text, LongWritable> 
     {
-      public void map(Object key, Text value, Context context) throws IOException, InterruptedException{
-        String line = value.toString();
-        String[] lines = line.split(",");
-        int birthyear = Integer.parseInt(lines[3].split("-")[0]); 
-        String userId = lines[0];
-        
+      public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
+          String line = value.toString();
+          String[] lines = line.split(",");
+        int birthyear = Integer.parseInt(lines[3].split("-")[0]);
+        if (lines[3].contains(";") ){
+            return;
+        }
+
         int idx_to_start = 4;
+
         if (idx_to_start < lines.length){
           if (lines[idx_to_start].contains("@")){
+              if (lines[idx_to_start].contains(";")) {
+                  return;
+              }
               idx_to_start+=1;
           }
-
+          if (idx_to_start >= lines.length) {
+                return;
+          }
           for (int i = idx_to_start; i <lines.length; i++){
               if (lines[i].contains(";")){
-                  String[] idsToAdd =lines[i].split(";")[0].split(",");
-                  for (String id: idsToAdd){
-                      context.write(new Text(id), new LongWritable(birthyear));
-                  }
+                  String idsToAdd =lines[i].split(";")[0];
+                      if (birthyear <= 1963) {
+                          context.write(new Text(idsToAdd), new LongWritable(1));
+                      } else{
+                            context.write(new Text(idsToAdd), new LongWritable(0));
+                      }
                   break;
               }
-              context.write(new Text(lines[i]), new LongWritable(birthyear));
+              if (birthyear <= 1963) {
+                  context.write(new Text(lines[i]), new LongWritable(1));
+              } else {
+                  context.write(new Text(lines[i]), new LongWritable(0));
+              }
           }
         }
       }
@@ -55,9 +71,7 @@ public class Problem6 {
             long count = 0;
             for (LongWritable val: values){
               long year = val.get();
-              if (year <= 1963){
-                count += 1;
-              }
+              count += year;
             }
             context.write(key, new LongWritable(count));
         }

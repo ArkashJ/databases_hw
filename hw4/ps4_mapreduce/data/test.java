@@ -5,35 +5,54 @@ import java.io.FileReader;
 import java.io.IOException;
 public class test {
     public static void main(String[] args) { 
-        String filePath="users1.txt"; 
+        String filePath="users100.txt";
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             // Skip the first line (header line)
             br.readLine();
 
             String line;
             while ((line = br.readLine()) != null) {
-                String[] values = line.split(",");
-                String birthyear = values[3].split("-")[0];
-                String userId = values[0]; 
-                System.out.println("values is" +Arrays.toString(values) + " --- " + birthyear+"--- id" + userId + "---values length is" + values.length);
-                ArrayList<String> ids = new ArrayList<String>();
-                int idx_to_start = 4;
-                if (values[idx_to_start].contains("@")){
-                    idx_to_start+=1;
-                }
-                for (int i = idx_to_start; i <values.length; i++){
-                    System.out.println(values[i].toString());
-                    if (values[i].contains(";")){
-                        String[] idsToAdd = values[i].split(";")[0].split(",");
-                        for (String id: idsToAdd){
-                            ids.add(id); 
-                            System.out.println(id.toString());
+                String[] values = line.split(",", 5);
+                System.out.println("Values array - " + Arrays.toString(values) + " -- length is " + values.length + " last element is " + values[values.length-1]);
+                if (values.length > 4) {
+                    if (values[4].contains("@")) {
+
+                        String[] temp = values[4].split(",");
+                        System.out.println("temp arr = " + Arrays.toString(temp));
+                        if (temp.length == 1 || temp[0].contains(";")) {
+                            System.out.println("BREAKING---------------------------------");
+                            continue;
                         }
-                        break;
+                        values[4] = values[4].split(",", 2)[1];
+                        System.out.println(" before leaving loop " + Arrays.toString(values));
+                        System.out.println("");
                     }
-                    ids.add(values[i]); 
+                    values[4] = values[4].split(";")[0];
                 }
-                System.out.println("user is " + userId + "--" + ids );
+//                String birthyear = values[3].split("-")[0];
+//                String userId = values[0];
+//                System.out.println("values is" +Arrays.toString(values) + " --- " + birthyear+"--- id" + userId + "---values length is" + values.length);
+//                ArrayList<String> ids = new ArrayList<String>();
+//                int idx_to_start = 4;
+//                if (values[idx_to_start].contains("@")){
+//                    idx_to_start+=1;
+//                }
+//                for (int i = idx_to_start; i <values.length; i++){
+//                    System.out.println(values[i].toString());
+//                    if (values[i].contains(";")){
+//                        String[] idsToAdd = values[i].split(";")[0].split(",");
+//                        for (String id: idsToAdd){
+//                            ids.add(id);
+//                            System.out.println(id.toString());
+//                        }
+//                        break;
+//                    }
+//                    ids.add(values[i]);
+//                }
+//                System.out.println("user is " + userId + "--" + ids );
+
+
+
                 // System.out.println(values[idx_to_start].toString());
                 // while (!values[idx_to_start].contains(";") ){
                 //     ids.add(values[idx_to_start]);
