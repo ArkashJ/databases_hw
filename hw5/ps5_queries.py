@@ -26,14 +26,14 @@ db.people.find({$or: [{name: "Ryan Gosling"}, {name: "America Ferrera"}]}, {name
 # 2. Put your query for this problem between the triple quotes found below.
 #
 query2 = """
-db.movies.find({rating: {$nin: ["R", "PG"]}, year: {$lt: 1960}}, {name:1, year:1, _id:0})
+db.movies.find({rating: {$exists: false}, year: {$gte: 1960}}, {name:1, year:1, _id:0})
 """
 
 #
 # 3. Put your query for this problem between the triple quotes found below.
 #
 query3 = """
-db.oscars.distinct("movie.name", {"movie.name": /^The/})
+db.oscars.distinct("movie.name", {"movie.name": /^The /})
 """
 
 #
@@ -78,12 +78,11 @@ db.movies.aggregate(
 # 8. Put your query for this problem between the triple quotes found below.
 #
 query8 = """
-db.people.aggregate({$match: {hasdirected: true, pob: /, usa/}}, {$group: {_id: "$pob", num_directors: {$sum:1}}}, 
+db.people.aggregate({$match: {hasDirected: true, pob: /, USA/}}, {$group: {_id: "$pob", num_directors: {$sum:1}}}, 
 {$match: {num_directors: {$gte: 5}}}, 
-{$sort: {num_directors: -1, _id: 1}},
+{$sort: {num_directors: -1}},
 {$project: {_id: 0, pob: "$_id", num_directors: 1}}
-)
-"""
+)"""
 
 #
 # 9. Put your query for this problem between the triple quotes found below.
